@@ -1,151 +1,174 @@
-import { useGetAllMoviesQuery } from "../../redux/api/movies";
-import { useFetchGenresQuery } from "../../redux/api/genre";
+import { useState } from "react";
+
+import Navbar from "../../component/Landing/Navbar";
+import HeroBanner from "../../component/Landing/HeroBanner";
+import MovieGrid from "./MovieGrid";
+import FilterBar from "../../component/Explorer/FilterBar";
+
 import {
-  useGetNewMoviesQuery,
-  useGetTopMoviesQuery,
-  useGetRandomMoviesQuery,
+  useDiscoverMoviesQuery,
+  useGetGenresQuery,
+  useSearchMoviesQuery,
 } from "../../redux/api/movies";
-import MovieCard from "./MovieCard";
-import { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import banner from "../../assets/banner.jpg";
-import {
-  setMoviesFilter,
-  setFilteredMovies,
-  setMovieYears,
-  setUniqueYears,
-} from "../../redux/features/movies/moviesSlice";
 
 const AllMovies = () => {
-  const dispatch = useDispatch();
-  const { data } = useGetAllMoviesQuery();
-  const { data: genres } = useFetchGenresQuery();
-  const { data: newMovies } = useGetNewMoviesQuery();
-  const { data: topMovies } = useGetTopMoviesQuery();
-  const { data: randomMovies } = useGetRandomMoviesQuery();
+  // ==========================
+  // Filter States
+  // ==========================
 
-  const { moviesFilter, filteredMovies } = useSelector((state) => state.movies);
+  const [searchInput, setSearchInput] = useState("");
+  const [search, setSearch] = useState("");
 
-  const movieYears = data?.map((movie) => movie.year);
-  const uniqueYears = Array.from(new Set(movieYears));
+  const [genre, setGenre] = useState("");
+  const [sort, setSort] = useState("popularity");
 
-  useEffect(() => {
-    dispatch(setFilteredMovies(data || []));
-    dispatch(setMovieYears(movieYears));
-    dispatch(setUniqueYears(uniqueYears));
-  }, [data, dispatch]);
+  const [page, setPage] = useState(1);
 
-  const handleSearchChange = (e) => {
-    dispatch(setMoviesFilter({ searchTerm: e.target.value }));
+  // ==========================
+  // Fetch Genres
+  // ==========================
 
-    const filteredMovies = data.filter((movie) =>
-      movie.name.toLowerCase().includes(e.target.value.toLowerCase())
-    );
+  const {
+    data: genres = [],
+    isLoading: genresLoading,
+  } = useGetGenresQuery();
 
-    dispatch(setFilteredMovies(filteredMovies));
+  // ==========================
+  // Fetch Movies
+  // ==========================
+
+// ==========================
+// Discover Movies
+// ==========================
+
+const {
+  data: discoverMovies = [],
+  isLoading: discoverLoading,
+} = useDiscoverMoviesQuery({
+  genre,
+  sort,
+  page,
+});
+
+// ==========================
+// Search Movies
+// ==========================
+
+const {
+  data: searchedMovies = [],
+  isLoading: searchLoading,
+} = useSearchMoviesQuery(search, {
+  skip: search.trim() === "",
+});
+
+  // ==========================
+  // Search
+  // ==========================
+
+// ==========================
+// Display Movies
+// ==========================
+
+const filteredMovies =
+  search.trim() !== ""
+    ? searchedMovies
+    : discoverMovies;
+
+const isLoading =
+  search.trim() !== ""
+    ? searchLoading
+    : discoverLoading;
+
+  // ==========================
+  // Search Button
+  // ==========================
+
+  const handleSearch = () => {
+    setSearch(searchInput);
   };
 
-  const handleGenreClick = (genreId) => {
-    const filterByGenre = data.filter((movie) => movie.genre === genreId);
-    dispatch(setFilteredMovies(filterByGenre));
-  };
+  // ==========================
+  // Reset
+  // ==========================
 
-  const handleYearChange = (year) => {
-    const filterByYear = data.filter((movie) => movie.year === +year);
-    dispatch(setFilteredMovies(filterByYear));
-  };
-
-  const handleSortChange = (sortOption) => {
-    switch (sortOption) {
-      case "new":
-        dispatch(setFilteredMovies(newMovies));
-        break;
-      case "top":
-        dispatch(setFilteredMovies(topMovies));
-        break;
-      case "random":
-        dispatch(setFilteredMovies(randomMovies));
-        break;
-
-      default:
-        dispatch(setFilteredMovies([]));
-        break;
-    }
+  const resetFilters = () => {
+    setSearch("");
+    setSearchInput("");
+    setGenre("");
+    setSort("popularity");
+    setPage(1);
   };
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 -translate-y-[5rem]">
-      <>
-        <section>
-          <div
-            className="relative h-[50rem] w-screen mb-10 flex items-center justify-center bg-cover"
-            style={{ backgroundImage: `url(${banner})` }}
-          >
-            <div className="absolute inset-0 bg-gradient-to-b from-gray-800 to-black opacity-60"></div>
+    <div className="min-h-screen bg-black text-white">
+      <Navbar />
 
-            <div className="relative z-10 text-center text-white mt-[10rem]">
-              <h1 className="text-8xl font-bold mb-4">The Movies Hub</h1>
-              <p className="text-2xl">
-                Cinematic Odyssey: Unveiling the Magic of Movies
-              </p>
-            </div>
+      <HeroBanner movie={filteredMovies[0]} />
 
-            <section className="absolute -bottom-[5rem]">
-              <input
-                type="text"
-                className="w-[100%] h-[5rem] border px-10 outline-none rounded"
-                placeholder="Search Movie"
-                value={moviesFilter.searchTerm}
-                onChange={handleSearchChange}
-              />
-              <section className="sorts-container mt-[2rem] ml-[10rem]  w-[30rem]">
-                <select
-                  className="border p-2 rounded text-black"
-                  value={moviesFilter.selectedGenre}
-                  onChange={(e) => handleGenreClick(e.target.value)}
-                >
-                  <option value="">Genres</option>
-                  {genres?.map((genre) => (
-                    <option key={genre._id} value={genre._id}>
-                      {genre.name}
-                    </option>
-                  ))}
-                </select>
+      <div className="relative z-20 -mt-20 max-w-7xl mx-auto px-6 pb-12">
 
-                <select
-                  className="border p-2 rounded ml-4 text-black"
-                  value={moviesFilter.selectedYear}
-                  onChange={(e) => handleYearChange(e.target.value)}
-                >
-                  <option value="">Year</option>
-                  {uniqueYears.map((year) => (
-                    <option key={year} value={year}>
-                      {year}
-                    </option>
-                  ))}
-                </select>
+        <FilterBar
+          search={searchInput}
+          setSearch={setSearchInput}
+          onSearch={handleSearch}
+          genre={genre}
+          setGenre={setGenre}
+          sort={sort}
+          setSort={setSort}
+          genres={genres}
+          resetFilters={resetFilters}
+        />
 
-                <select
-                  className="border p-2 rounded ml-4 text-black"
-                  value={moviesFilter.selectedSort}
-                  onChange={(e) => handleSortChange(e.target.value)}
-                >
-                  <option value="">Sort By</option>
-                  <option value="new">New Movies</option>
-                  <option value="top">Top Movies</option>
-                  <option value="random">Random Movies</option>
-                </select>
-              </section>
-            </section>
+        <div className="flex items-center justify-between mt-12 mb-8">
+          <div>
+            <h2 className="text-4xl md:text-5xl font-bold">
+              Discover Movies
+            </h2>
+
+            <p className="text-gray-400 mt-3">
+              Explore the latest movies using smart filters.
+            </p>
           </div>
 
-          <section className="mt-[10rem] w-screen flex justify-center items-center flex-wrap">
-            {filteredMovies?.map((movie) => (
-              <MovieCard key={movie._id} movie={movie} />
-            ))}
-          </section>
-        </section>
-      </>
+          {!isLoading && (
+            <div className="hidden md:block text-gray-400">
+              {filteredMovies.length} Movies Found
+            </div>
+          )}
+        </div>
+
+        {isLoading || genresLoading ? (
+          <div className="flex justify-center py-24">
+            <div className="w-12 h-12 border-4 border-red-600 border-t-transparent rounded-full animate-spin"></div>
+          </div>
+        ) : filteredMovies.length === 0 ? (
+          <div className="text-center py-24">
+            <h2 className="text-4xl font-bold">
+              No Movies Found
+            </h2>
+
+            <p className="text-gray-400 mt-4">
+              Try changing the search or genre.
+            </p>
+          </div>
+        ) : (
+          <>
+            <MovieGrid
+              movies={filteredMovies}
+              isLoading={false}
+            />
+
+            <div className="flex justify-center mt-14">
+              <button
+                onClick={() => setPage((prev) => prev + 1)}
+                className="px-8 py-4 bg-red-600 hover:bg-red-700 rounded-xl font-semibold transition duration-300"
+              >
+                Load More Movies
+              </button>
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 };

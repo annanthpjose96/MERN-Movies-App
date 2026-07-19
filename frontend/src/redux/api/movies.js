@@ -6,6 +6,7 @@ export const moviesApiSlice = apiSlice.injectEndpoints({
     getAllMovies: builder.query({
       query: () => `${MOVIE_URL}/all-movies`,
     }),
+
     createMovie: builder.mutation({
       query: (newMovie) => ({
         url: `${MOVIE_URL}/create-movie`,
@@ -68,6 +69,65 @@ export const moviesApiSlice = apiSlice.injectEndpoints({
     getRandomMovies: builder.query({
       query: () => `${MOVIE_URL}/random-movies`,
     }),
+
+    // =========================
+    // TMDB CATEGORY ROUTES
+    // =========================
+
+    getTrendingMovies: builder.query({
+      query: () => `${MOVIE_URL}/trending`,
+    }),
+
+    getPopularMovies: builder.query({
+      query: () => `${MOVIE_URL}/popular`,
+    }),
+
+    getTopRatedMovies: builder.query({
+      query: () => `${MOVIE_URL}/top-rated`,
+    }),
+
+    getUpcomingMovies: builder.query({
+      query: () => `${MOVIE_URL}/upcoming`,
+    }),
+
+    // =========================
+    // TMDB GENRES
+    // =========================
+
+    getGenres: builder.query({
+      query: () => `${MOVIE_URL}/genres`,
+    }),
+
+    // =========================
+    // DISCOVER MOVIES
+    // =========================
+
+    discoverMovies: builder.query({
+      query: ({
+        genre = "",
+        sort = "popularity",
+        year = "",
+        language = "",
+        page = 1,
+      }) => ({
+        url: `${MOVIE_URL}/discover`,
+        params: {
+          genre,
+          sort,
+          year,
+          language,
+          page,
+        },
+      }),
+    }),
+
+    // =========================
+    // SEARCH
+    // =========================
+
+    searchMovies: builder.query({
+      query: (keyword) => `${MOVIE_URL}/search/${keyword}`,
+    }),
   }),
 });
 
@@ -80,8 +140,18 @@ export const {
   useGetSpecificMovieQuery,
   useUploadImageMutation,
   useDeleteMovieMutation,
-  //
+
   useGetNewMoviesQuery,
   useGetTopMoviesQuery,
   useGetRandomMoviesQuery,
+
+  useGetTrendingMoviesQuery,
+  useGetPopularMoviesQuery,
+  useGetTopRatedMoviesQuery,
+  useGetUpcomingMoviesQuery,
+
+  useGetGenresQuery,
+  useDiscoverMoviesQuery,
+
+  useSearchMoviesQuery,
 } = moviesApiSlice;

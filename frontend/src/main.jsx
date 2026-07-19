@@ -22,30 +22,62 @@ import UpdateMovie from "./pages/Admin/UpdateMovie.jsx";
 import CreateMovie from "./pages/Admin/CreateMovie.jsx";
 import AllMovies from "./pages/Movies/AllMovies.jsx";
 import MovieDetails from "./pages/Movies/MovieDetails.jsx";
+import Search from "./pages/Movies/Search.jsx";
+import Watchlist from "./pages/Movies/Watchlist.jsx";
+import NotFound from "./pages/NotFound.jsx";
 import AllComments from "./pages/Admin/AllComments.jsx";
 import AdminDashboard from "./pages/Admin/Dashboard/AdminDashboard.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
-      <Route index={true} path="/" element={<Home />} />
+      {/* Public */}
+
+      <Route index element={<Home />} />
+
       <Route path="/movies" element={<AllMovies />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
+
       <Route path="/movies/:id" element={<MovieDetails />} />
 
-      <Route path="" element={<PrivateRoute />}>
+      <Route path="/search/:keyword" element={<Search />} />
+
+      <Route path="/watchlist" element={<Watchlist />} />
+
+      <Route path="/login" element={<Login />} />
+
+      <Route path="/register" element={<Register />} />
+
+      {/* Protected */}
+
+      <Route element={<PrivateRoute />}>
         <Route path="/profile" element={<Profile />} />
       </Route>
 
-      <Route path="" element={<AdminRoute />}>
+      {/* Admin */}
+
+      <Route element={<AdminRoute />}>
         <Route path="/admin/movies/genre" element={<GenreList />} />
+
         <Route path="/admin/movies/create" element={<CreateMovie />} />
+
         <Route path="/admin/movies-list" element={<AdminMoviesList />} />
+
         <Route path="/admin/movies/update/:id" element={<UpdateMovie />} />
-        <Route path="/admin/movies/dashboard" element={<AdminDashboard />} />
-        <Route path="/admin/movies/comments" element={<AllComments />} />
+
+        <Route
+          path="/admin/movies/dashboard"
+          element={<AdminDashboard />}
+        />
+
+        <Route
+          path="/admin/movies/comments"
+          element={<AllComments />}
+        />
       </Route>
+
+      {/* 404 */}
+
+      <Route path="*" element={<NotFound />} />
     </Route>
   )
 );

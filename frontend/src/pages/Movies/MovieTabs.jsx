@@ -1,61 +1,42 @@
 import { Link } from "react-router-dom";
 
-const MovieTabs = ({ userInfo, submitHandler, comment, setComment, movie }) => {
+const MovieTabs = ({ userInfo }) => {
   return (
-    <div>
-      <section>
-        {userInfo ? (
-          <form onSubmit={submitHandler}>
-            <div className="my-2">
-              <label htmlFor="comment" className="block text-xl mb-2">
-                Write Your Review
-              </label>
+    <div className="mt-16 border-t border-gray-700 pt-10">
 
-              <textarea
-                id="comment"
-                rows="3"
-                required
-                value={comment}
-                onChange={(e) => setComment(e.target.value)}
-                className="p-2 border rounded-lg xl:w-[40rem] text-black"
-              ></textarea>
-            </div>
+      <h2 className="text-3xl font-bold mb-6">
+        Reviews
+      </h2>
 
-            <button
-              type="submit"
-              className="bg-teal-600 text-white py-2 px-4 rounded-lg"
-            >
-              Submit
-            </button>
-          </form>
-        ) : (
-          <p>
-            Please <Link to="/login">Sign In</Link> to write a review
+      {userInfo ? (
+        <div className="bg-[#111] border border-gray-700 rounded-xl p-6">
+
+          <h3 className="text-xl font-semibold mb-2">
+            Review System
+          </h3>
+
+          <p className="text-gray-400">
+            Reviews will be enabled after we connect TMDB movies with MongoDB.
           </p>
-        )}
-      </section>
 
-      <section className="mt-[3rem]">
-        <div>{movie?.reviews.length === 0 && <p>No Reviews</p>}</div>
-
-        <div>
-          {movie?.reviews.map((review) => (
-            <div
-              key={review._id}
-              className="bg-[#1A1A1A] p-4 rounded-lg w-[50%] mt-[2rem]"
-            >
-              <div className="flex justify-between">
-                <strong className="text-[#B0B0B0]">{review.name}</strong>
-                <p className="text-[#B0B0B0]">
-                  {review.createdAt.substring(0, 10)}
-                </p>
-              </div>
-
-              <p className="my-4">{review.comment}</p>
-            </div>
-          ))}
         </div>
-      </section>
+      ) : (
+        <div className="bg-[#111] border border-gray-700 rounded-xl p-6">
+
+          <p className="text-gray-400">
+            Please{" "}
+            <Link
+              to="/login"
+              className="text-red-500 hover:underline"
+            >
+              Sign In
+            </Link>{" "}
+            to write a review.
+          </p>
+
+        </div>
+      )}
+
     </div>
   );
 };
