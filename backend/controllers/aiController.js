@@ -1,5 +1,5 @@
 import { askMovieAI } from "../services/aiService.js";
-import { searchMultipleMovies } from "../services/tmdbService.js";
+import { searchMultipleMovies } from "../services/aiTmdbService.js";
 import crypto from "crypto";
 
 const chatWithAI = async (req, res) => {
