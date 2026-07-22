@@ -1,12 +1,12 @@
 import MovieRow from "./MovieRow";
-import { useGetRandomMoviesQuery } from "../../redux/api/movies";
+import { useGetTrendingMoviesQuery } from "../../redux/api/movies";
 
 const Trending = () => {
   const {
-    data: trending,
+    data: trending = [],
     isLoading,
     error,
-  } = useGetRandomMoviesQuery();
+  } = useGetTrendingMoviesQuery();
 
   if (isLoading) {
     return (

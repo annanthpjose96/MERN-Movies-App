@@ -30,7 +30,7 @@ import connectDB from "./config/db.js";
 import userRoutes from "./routes/userRoutes.js";
 import genreRoutes from "./routes/genreRoutes.js";
 import moviesRoutes from "./routes/moviesRoutes.js";
-import uploadRoutes from "./routes/uploadRoutes.js";
+
 import aiRoutes from "./routes/aiRoutes.js";
 
 // ==============================
@@ -73,7 +73,7 @@ const PORT = process.env.PORT || 3000;
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/genre", genreRoutes);
 app.use("/api/v1/movies", moviesRoutes);
-app.use("/api/v1/upload", uploadRoutes);
+
 app.use("/api/v1/ai", aiRoutes);
 
 // ==============================

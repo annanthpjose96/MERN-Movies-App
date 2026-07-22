@@ -3,12 +3,8 @@ import { Link, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
-import {
-  useGetSpecificMovieQuery,
-  useAddMovieReviewMutation,
-} from "../../redux/api/movies";
+import { useGetSpecificMovieQuery } from "../../redux/api/movies";
 
-import MovieTabs from "./MovieTabs";
 import TrailerModal from "../../component/TrailerModal";
 
 import {
@@ -19,13 +15,9 @@ import {
 const MovieDetails = () => {
   const { id: movieId } = useParams();
 
-  const [rating, setRating] = useState(0);
-  const [comment, setComment] = useState("");
   const [isTrailerOpen, setIsTrailerOpen] = useState(false);
 
-  const { data: movie, refetch } = useGetSpecificMovieQuery(movieId);
-
-  const { userInfo } = useSelector((state) => state.auth);
+  const { data: movie } = useGetSpecificMovieQuery(movieId);
 
   const dispatch = useDispatch();
 
@@ -40,27 +32,6 @@ const MovieDetails = () => {
     } else {
       dispatch(addToWatchlist(movie));
       toast.success("Added to Watchlist");
-    }
-  };
-
-  const [createReview, { isLoading: loadingMovieReview }] =
-    useAddMovieReviewMutation();
-
-  const submitHandler = async (e) => {
-    e.preventDefault();
-
-    try {
-      await createReview({
-        id: movieId,
-        rating,
-        comment,
-      }).unwrap();
-
-      refetch();
-
-      toast.success("Review created successfully");
-    } catch (error) {
-      toast.error(error?.data?.message || error.error);
     }
   };
 
@@ -272,23 +243,6 @@ const MovieDetails = () => {
               </Link>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* ================= REVIEWS ================= */}
-
-      <section className="bg-black pb-24">
-        <div className="max-w-7xl mx-auto px-10 border-t border-gray-800 pt-16">
-          <MovieTabs
-            loadingMovieReview={loadingMovieReview}
-            userInfo={userInfo}
-            submitHandler={submitHandler}
-            rating={rating}
-            setRating={setRating}
-            comment={comment}
-            setComment={setComment}
-            movie={movie}
-          />
         </div>
       </section>
 
