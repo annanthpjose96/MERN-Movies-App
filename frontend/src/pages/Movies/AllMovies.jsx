@@ -34,50 +34,42 @@ const AllMovies = () => {
   } = useGetGenresQuery();
 
   // ==========================
-  // Fetch Movies
+  // Discover Movies
   // ==========================
 
-// ==========================
-// Discover Movies
-// ==========================
-
-const {
-  data: discoverMovies = [],
-  isLoading: discoverLoading,
-} = useDiscoverMoviesQuery({
-  genre,
-  sort,
-  page,
-});
-
-// ==========================
-// Search Movies
-// ==========================
-
-const {
-  data: searchedMovies = [],
-  isLoading: searchLoading,
-} = useSearchMoviesQuery(search, {
-  skip: search.trim() === "",
-});
+  const {
+    data: discoverMovies = [],
+    isLoading: discoverLoading,
+  } = useDiscoverMoviesQuery({
+    genre,
+    sort,
+    page,
+  });
 
   // ==========================
-  // Search
+  // Search Movies
   // ==========================
 
-// ==========================
-// Display Movies
-// ==========================
+  const {
+    data: searchedMovies = [],
+    isLoading: searchLoading,
+  } = useSearchMoviesQuery(search, {
+    skip: search.trim() === "",
+  });
 
-const filteredMovies =
-  search.trim() !== ""
-    ? searchedMovies
-    : discoverMovies;
+  // ==========================
+  // Display Movies
+  // ==========================
 
-const isLoading =
-  search.trim() !== ""
-    ? searchLoading
-    : discoverLoading;
+  const filteredMovies =
+    search.trim() !== ""
+      ? searchedMovies
+      : discoverMovies;
+
+  const isLoading =
+    search.trim() !== ""
+      ? searchLoading
+      : discoverLoading;
 
   // ==========================
   // Search Button
@@ -106,7 +98,6 @@ const isLoading =
       <HeroBanner movie={filteredMovies[0]} />
 
       <div className="relative z-20 -mt-20 max-w-7xl mx-auto px-6 pb-12">
-
         <FilterBar
           search={searchInput}
           setSearch={setSearchInput}
@@ -119,22 +110,14 @@ const isLoading =
           resetFilters={resetFilters}
         />
 
-        <div className="flex items-center justify-between mt-12 mb-8">
-          <div>
-            <h2 className="text-4xl md:text-5xl font-bold">
-              Discover Movies
-            </h2>
+        <div className="mt-12 mb-8">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold">
+            Discover Movies
+          </h2>
 
-            <p className="text-gray-400 mt-3">
-              Explore the latest movies using smart filters.
-            </p>
-          </div>
-
-          {!isLoading && (
-            <div className="hidden md:block text-gray-400">
-              {filteredMovies.length} Movies Found
-            </div>
-          )}
+          <p className="text-gray-400 mt-3 text-base md:text-lg">
+            Explore the latest movies using smart filters.
+          </p>
         </div>
 
         {isLoading || genresLoading ? (

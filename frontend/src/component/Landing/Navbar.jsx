@@ -49,9 +49,7 @@ const Navbar = () => {
   return (
     <header className="absolute top-0 left-0 w-full z-50">
       <div className="max-w-7xl mx-auto px-4 md:px-8 py-5">
-
         <div className="flex items-center justify-between">
-
           {/* Logo */}
 
           <Link
@@ -64,12 +62,11 @@ const Navbar = () => {
           {/* Desktop Right */}
 
           <div className="hidden lg:flex items-center gap-4">
-
             <Link
               to="/watchlist"
               className="relative bg-gray-800 hover:bg-gray-700 transition px-5 py-2 rounded-md text-white font-semibold"
             >
-              ❤️ Watchlist
+              ❤️ {watchlist && watchlist.length > 0 ? "My Watchlist" : "Watchlist"}
 
               {watchlist.length > 0 && (
                 <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs w-6 h-6 rounded-full flex items-center justify-center">
@@ -77,12 +74,6 @@ const Navbar = () => {
                 </span>
               )}
             </Link>
-
-            <select className="bg-black/70 border border-gray-500 text-white px-4 py-2 rounded-md">
-              <option>English</option>
-              <option>Malayalam</option>
-              <option>Hindi</option>
-            </select>
 
             {!userInfo ? (
               <Link
@@ -93,7 +84,6 @@ const Navbar = () => {
               </Link>
             ) : (
               <div className="relative">
-
                 <button
                   onClick={() => setProfileOpen(!profileOpen)}
                   className="bg-red-600 hover:bg-red-700 transition px-5 py-2 rounded-md text-white font-semibold"
@@ -103,7 +93,6 @@ const Navbar = () => {
 
                 {profileOpen && (
                   <div className="absolute right-0 mt-2 w-56 bg-[#181818] border border-gray-700 rounded-lg shadow-2xl overflow-hidden">
-
                     <Link
                       to="/profile"
                       onClick={() => setProfileOpen(false)}
@@ -118,13 +107,10 @@ const Navbar = () => {
                     >
                       🚪 Logout
                     </button>
-
                   </div>
                 )}
-
               </div>
             )}
-
           </div>
 
           {/* Mobile Hamburger */}
@@ -135,16 +121,13 @@ const Navbar = () => {
           >
             {menuOpen ? "✕" : "☰"}
           </button>
-
         </div>
 
         {/* Mobile Menu */}
 
         {menuOpen && (
           <div className="lg:hidden mt-6 bg-black/95 rounded-xl p-5 border border-gray-800">
-
             <form onSubmit={searchHandler} className="flex flex-col gap-4">
-
               <input
                 type="text"
                 placeholder="Search movies..."
@@ -159,7 +142,6 @@ const Navbar = () => {
               >
                 Search
               </button>
-
             </form>
 
             <Link
@@ -167,21 +149,16 @@ const Navbar = () => {
               onClick={() => setMenuOpen(false)}
               className="mt-5 flex justify-between items-center bg-gray-800 hover:bg-gray-700 px-4 py-3 rounded-md text-white font-semibold"
             >
-              <span>❤️ Watchlist</span>
+              <span>
+                ❤️ {watchlist && watchlist.length > 0 ? "My Watchlist" : "Watchlist"}
+              </span>
 
               {watchlist.length > 0 && (
                 <span className="bg-red-600 w-7 h-7 rounded-full flex items-center justify-center text-sm">
                   {watchlist.length}
                 </span>
               )}
-
             </Link>
-
-            <select className="w-full mt-5 bg-[#222] border border-gray-600 text-white px-4 py-3 rounded-md">
-              <option>English</option>
-              <option>Malayalam</option>
-              <option>Hindi</option>
-            </select>
 
             {!userInfo ? (
               <Link
@@ -209,7 +186,6 @@ const Navbar = () => {
                 </button>
               </>
             )}
-
           </div>
         )}
       </div>
