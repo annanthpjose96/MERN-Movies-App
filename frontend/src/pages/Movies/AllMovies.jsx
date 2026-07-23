@@ -28,55 +28,43 @@ const AllMovies = () => {
   // Fetch Genres
   // ==========================
 
-  const {
-    data: genres = [],
-    isLoading: genresLoading,
-  } = useGetGenresQuery();
+  const { data: genres = [], isLoading: genresLoading } = useGetGenresQuery();
 
   // ==========================
   // Discover Movies
   // ==========================
 
-  const {
-    data: discoverMovies = [],
-    isLoading: discoverLoading,
-  } = useDiscoverMoviesQuery({
-    genre,
-    sort,
-    page,
-  });
+  const { data: discoverMovies = [], isLoading: discoverLoading } =
+    useDiscoverMoviesQuery({
+      genre,
+      sort,
+      page,
+    });
 
   // ==========================
   // Search Movies
   // ==========================
 
-  const {
-    data: searchedMovies = [],
-    isLoading: searchLoading,
-  } = useSearchMoviesQuery(search, {
-    skip: search.trim() === "",
-  });
+  const { data: searchedMovies = [], isLoading: searchLoading } =
+    useSearchMoviesQuery(search, {
+      skip: search.trim() === "",
+    });
 
   // ==========================
   // Display Movies
   // ==========================
 
-  const filteredMovies =
-    search.trim() !== ""
-      ? searchedMovies
-      : discoverMovies;
+  const filteredMovies = search.trim() !== "" ? searchedMovies : discoverMovies;
 
-  const isLoading =
-    search.trim() !== ""
-      ? searchLoading
-      : discoverLoading;
+  const isLoading = search.trim() !== "" ? searchLoading : discoverLoading;
 
   // ==========================
-  // Search Button
+  // Search
   // ==========================
 
   const handleSearch = () => {
     setSearch(searchInput);
+    setPage(1);
   };
 
   // ==========================
@@ -97,7 +85,7 @@ const AllMovies = () => {
 
       <HeroBanner movie={filteredMovies[0]} />
 
-      <div className="relative z-20 -mt-20 max-w-7xl mx-auto px-6 pb-12">
+      <div className="relative z-20 -mt-20 max-w-7xl mx-auto px-6 pb-16">
         <FilterBar
           search={searchInput}
           setSearch={setSearchInput}
@@ -110,13 +98,13 @@ const AllMovies = () => {
           resetFilters={resetFilters}
         />
 
-        <div className="mt-12 mb-8">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold">
+        <div className="mt-8 mb-6">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold">
             Discover Movies
           </h2>
 
-          <p className="text-gray-400 mt-3 text-base md:text-lg">
-            Explore the latest movies using smart filters.
+          <p className="text-gray-400 mt-2 text-base">
+            Search, filter and discover thousands of movies from every genre.
           </p>
         </div>
 
@@ -126,25 +114,36 @@ const AllMovies = () => {
           </div>
         ) : filteredMovies.length === 0 ? (
           <div className="text-center py-24">
-            <h2 className="text-4xl font-bold">
-              No Movies Found
-            </h2>
+            <h2 className="text-4xl font-bold">No Movies Found</h2>
 
             <p className="text-gray-400 mt-4">
-              Try changing the search or genre.
+              Try changing your search or filters.
             </p>
+
+            <button
+              onClick={resetFilters}
+              className="mt-8 bg-red-600 hover:bg-red-700 px-8 py-3 rounded-xl font-semibold transition"
+            >
+              Reset Filters
+            </button>
           </div>
         ) : (
           <>
-            <MovieGrid
-              movies={filteredMovies}
-              isLoading={false}
-            />
+            <MovieGrid movies={filteredMovies} isLoading={false} />
+            <div className="flex flex-col items-center mt-14 mb-8">
+              <p className="text-gray-400 text-center mb-6">
+                Showing{" "}
+                <span className="text-white font-semibold">
+                  {filteredMovies.length}
+                </span>{" "}
+                movies.
+                <br />
+                Load more to discover even more amazing titles.
+              </p>
 
-            <div className="flex justify-center mt-14">
               <button
                 onClick={() => setPage((prev) => prev + 1)}
-                className="px-8 py-4 bg-red-600 hover:bg-red-700 rounded-xl font-semibold transition duration-300"
+                className="px-10 py-4 bg-red-600 hover:bg-red-700 rounded-xl font-semibold transition duration-300 hover:scale-105"
               >
                 Load More Movies
               </button>
