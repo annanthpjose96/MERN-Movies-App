@@ -30,7 +30,6 @@ import connectDB from "./config/db.js";
 import userRoutes from "./routes/userRoutes.js";
 import genreRoutes from "./routes/genreRoutes.js";
 import moviesRoutes from "./routes/moviesRoutes.js";
-
 import aiRoutes from "./routes/aiRoutes.js";
 
 // ==============================
@@ -42,12 +41,30 @@ connectDB();
 const app = express();
 
 // ==============================
+// Allowed Origins
+// ==============================
+
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://mern-movies-app-kappa.vercel.app",
+];
+
+// ==============================
 // CORS
 // ==============================
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: function (origin, callback) {
+      // Allow requests without an origin (Postman, mobile apps, etc.)
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error("Not allowed by CORS"));
+    },
     credentials: true,
   })
 );
@@ -73,7 +90,6 @@ const PORT = process.env.PORT || 3000;
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/genre", genreRoutes);
 app.use("/api/v1/movies", moviesRoutes);
-
 app.use("/api/v1/ai", aiRoutes);
 
 // ==============================
