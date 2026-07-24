@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:3000/api/v1/ai/chat";
+const API_URL = "https://movieflix-backend-g4wd.onrender.com/api/v1/ai/chat";
 
 // ======================================
 // Session Management
@@ -28,10 +28,7 @@ export const askMovieAI = async (message) => {
     // Save session id returned from backend
     if (data.sessionId) {
       sessionId = data.sessionId;
-      localStorage.setItem(
-        "movieflix-ai-session",
-        data.sessionId
-      );
+      localStorage.setItem("movieflix-ai-session", data.sessionId);
     }
 
     return data;
