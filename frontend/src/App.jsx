@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Lenis from "lenis";
 import { Outlet } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -9,6 +10,25 @@ import AIChat from "./component/AI/AIChat";
 
 const App = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
+
+  useEffect(() => {
+    const lenis = new Lenis({
+      duration: 1.2,
+      smoothWheel: true,
+      touchMultiplier: 1.5,
+    });
+
+    function raf(time) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+
+    requestAnimationFrame(raf);
+
+    return () => {
+      lenis.destroy();
+    };
+  }, []);
 
   return (
     <>
@@ -22,9 +42,7 @@ const App = () => {
 
       <Outlet />
 
-      <AIButton
-        onClick={() => setIsChatOpen(true)}
-      />
+      <AIButton onClick={() => setIsChatOpen(true)} />
 
       <AIChat
         isOpen={isChatOpen}

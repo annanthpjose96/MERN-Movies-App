@@ -1,3 +1,5 @@
+import { motion } from "framer-motion";
+
 const reasons = [
   {
     icon: "🎬",
@@ -37,26 +39,90 @@ const reasons = [
   },
 ];
 
+const containerVariants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.15,
+    },
+  },
+};
+
+const cardVariants = {
+  hidden: {
+    opacity: 0,
+    y: 50,
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.6,
+      ease: "easeOut",
+    },
+  },
+};
+
 const Reasons = () => {
   return (
     <section className="max-w-7xl mx-auto px-6 py-20">
-      <h2 className="text-4xl md:text-5xl font-bold text-white text-center mb-4">
+      <motion.h2
+        initial={{ opacity: 0, y: 35 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.7 }}
+        className="text-4xl md:text-5xl font-bold text-white text-center mb-4"
+      >
         Why Choose MovieFlix?
-      </h2>
+      </motion.h2>
 
-      <p className="text-gray-400 text-center text-lg max-w-3xl mx-auto mb-14">
+      <motion.p
+        initial={{ opacity: 0, y: 35 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.7, delay: 0.15 }}
+        className="text-gray-400 text-center text-lg max-w-3xl mx-auto mb-14"
+      >
         MovieFlix is more than just a movie discovery platform. From AI-powered
         recommendations to personalized watchlists, everything is designed to
         help you discover your next favorite movie effortlessly.
-      </p>
+      </motion.p>
 
-      <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.15 }}
+        className="grid gap-8 md:grid-cols-2 lg:grid-cols-3"
+      >
         {reasons.map((reason, index) => (
-          <div
+          <motion.div
             key={index}
-            className="bg-[#181818] border border-gray-800 rounded-2xl p-8 transition-all duration-300 hover:border-red-600 hover:-translate-y-2 hover:shadow-2xl hover:shadow-red-600/10"
+            variants={cardVariants}
+            whileHover={{
+              y: -12,
+              scale: 1.03,
+            }}
+            transition={{
+              type: "spring",
+              stiffness: 250,
+              damping: 18,
+            }}
+            className="bg-[#181818] border border-gray-800 rounded-2xl p-8 hover:border-red-600 hover:shadow-2xl hover:shadow-red-600/20"
           >
-            <div className="text-5xl mb-6">{reason.icon}</div>
+            <motion.div
+              whileHover={{
+                rotate: 10,
+                scale: 1.15,
+              }}
+              transition={{
+                type: "spring",
+                stiffness: 300,
+              }}
+              className="text-5xl mb-6"
+            >
+              {reason.icon}
+            </motion.div>
 
             <h3 className="text-2xl font-bold text-white mb-4">
               {reason.title}
@@ -65,9 +131,9 @@ const Reasons = () => {
             <p className="text-gray-400 leading-7">
               {reason.description}
             </p>
-          </div>
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
     </section>
   );
 };

@@ -1,5 +1,6 @@
 import { useRef, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 
 const CARD_WIDTH = 240;
 
@@ -23,16 +24,10 @@ const MovieRow = ({ title, movies }) => {
     window.addEventListener("resize", updateCardsPerView);
 
     return () =>
-      window.removeEventListener(
-        "resize",
-        updateCardsPerView
-      );
+      window.removeEventListener("resize", updateCardsPerView);
   }, []);
 
-  const maxIndex = Math.max(
-    0,
-    movies.length - cardsPerView
-  );
+  const maxIndex = Math.max(0, movies.length - cardsPerView);
 
   const slideNext = () => {
     setCurrentIndex((prev) =>
@@ -48,8 +43,6 @@ const MovieRow = ({ title, movies }) => {
 
   return (
     <section className="mb-16 group">
-      {/* Header */}
-
       <div className="flex items-center justify-between mb-8">
         <h2 className="text-4xl font-bold text-white">
           {title}
@@ -63,11 +56,7 @@ const MovieRow = ({ title, movies }) => {
         </Link>
       </div>
 
-      {/* Slider */}
-
       <div className="relative">
-        {/* Left Button */}
-
         {currentIndex > 0 && (
           <button
             onClick={slidePrev}
@@ -76,8 +65,6 @@ const MovieRow = ({ title, movies }) => {
             ❮
           </button>
         )}
-
-        {/* Right Button */}
 
         {currentIndex < maxIndex && (
           <button
@@ -88,52 +75,67 @@ const MovieRow = ({ title, movies }) => {
           </button>
         )}
 
-        {/* Movie Container */}
-
         <div className="overflow-hidden">
           <div
             ref={sliderRef}
             className="flex gap-5 transition-transform duration-700 ease-in-out"
             style={{
-              transform: `translateX(-${
-                currentIndex * CARD_WIDTH
-              }px)`,
+              transform: `translateX(-${currentIndex * CARD_WIDTH}px)`,
             }}
           >
             {movies?.map((movie, index) => (
-              <Link
+              <motion.div
                 key={movie._id}
-                to={`/movies/${movie._id}`}
-                className="relative flex-shrink-0 group/movie"
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{
+                  duration: 0.5,
+                  delay: index * 0.05,
+                }}
               >
-                {/* Rank */}
+                <Link
+                  to={`/movies/${movie._id}`}
+                  className="relative flex-shrink-0 group/movie block"
+                >
+                  <span className="absolute -left-6 bottom-0 text-[120px] font-black text-black opacity-90 [-webkit-text-stroke:2px_white] z-20 pointer-events-none">
+                    {index + 1}
+                  </span>
 
-                <span className="absolute -left-6 bottom-0 text-[120px] font-black text-black opacity-90 [-webkit-text-stroke:2px_white] z-20 pointer-events-none">
-                  {index + 1}
-                </span>
+                  <motion.div
+                    whileHover={{
+                      scale: 1.08,
+                      y: -10,
+                    }}
+                    transition={{
+                      type: "spring",
+                      stiffness: 300,
+                      damping: 20,
+                    }}
+                    className="relative w-[220px] h-[330px] rounded-xl overflow-hidden shadow-lg"
+                  >
+                    <motion.img
+                      src={movie.poster}
+                      alt={movie.name}
+                      className="w-full h-full object-cover"
+                      whileHover={{ scale: 1.1 }}
+                      transition={{ duration: 0.4 }}
+                    />
 
-                {/* Card */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
 
-                <div className="relative w-[220px] h-[330px] rounded-xl overflow-hidden transition-all duration-300 group-hover/movie:scale-110 group-hover/movie:z-30 group-hover/movie:shadow-[0_0_35px_rgba(229,9,20,0.45)]">
-                  <img
-                    src={movie.poster}
-                    alt={movie.name}
-                    className="w-full h-full object-cover"
-                  />
+                    <div className="absolute bottom-4 left-4 right-4">
+                      <h3 className="text-white font-bold text-lg line-clamp-2">
+                        {movie.name}
+                      </h3>
 
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
-
-                  <div className="absolute bottom-4 left-4 right-4">
-                    <h3 className="text-white font-bold text-lg line-clamp-2">
-                      {movie.name}
-                    </h3>
-
-                    <p className="text-gray-300 text-sm mt-1">
-                      {movie.year}
-                    </p>
-                  </div>
-                </div>
-              </Link>
+                      <p className="text-gray-300 text-sm mt-1">
+                        {movie.year}
+                      </p>
+                    </div>
+                  </motion.div>
+                </Link>
+              </motion.div>
             ))}
           </div>
         </div>

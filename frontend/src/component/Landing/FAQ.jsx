@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 
 const faqs = [
   {
@@ -33,6 +34,30 @@ const faqs = [
   },
 ];
 
+const containerVariants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.12,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: {
+    opacity: 0,
+    y: 35,
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.55,
+      ease: "easeOut",
+    },
+  },
+};
+
 const FAQ = () => {
   const [activeIndex, setActiveIndex] = useState(null);
 
@@ -42,41 +67,93 @@ const FAQ = () => {
 
   return (
     <section className="max-w-5xl mx-auto px-6 py-20">
-      <h2 className="text-4xl md:text-5xl font-bold text-center text-white mb-4">
+      <motion.h2
+        initial={{ opacity: 0, y: 35 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.7 }}
+        className="text-4xl md:text-5xl font-bold text-center text-white mb-4"
+      >
         Frequently Asked Questions
-      </h2>
+      </motion.h2>
 
-      <p className="text-center text-gray-400 max-w-3xl mx-auto mb-14 text-lg">
+      <motion.p
+        initial={{ opacity: 0, y: 35 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.7, delay: 0.15 }}
+        className="text-center text-gray-400 max-w-3xl mx-auto mb-14 text-lg"
+      >
         Everything you need to know about MovieFlix and its features.
-      </p>
+      </motion.p>
 
-      <div className="space-y-5">
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.15 }}
+        className="space-y-5"
+      >
         {faqs.map((faq, index) => (
-          <div
+          <motion.div
             key={index}
+            variants={itemVariants}
+            whileHover={{
+              scale: 1.01,
+            }}
             className="bg-[#181818] border border-gray-800 rounded-xl overflow-hidden"
           >
             <button
               onClick={() => toggleFAQ(index)}
-              className="w-full flex justify-between items-center text-left px-6 py-5 hover:bg-[#202020] transition"
+              className="w-full flex justify-between items-center text-left px-6 py-5 hover:bg-[#202020] transition-colors duration-300"
             >
               <span className="text-lg md:text-xl font-semibold text-white">
                 {faq.question}
               </span>
 
-              <span className="text-red-500 text-3xl font-bold">
-                {activeIndex === index ? "−" : "+"}
-              </span>
+              <motion.span
+                animate={{
+                  rotate: activeIndex === index ? 45 : 0,
+                }}
+                transition={{
+                  duration: 0.25,
+                }}
+                className="text-red-500 text-3xl font-bold"
+              >
+                +
+              </motion.span>
             </button>
 
-            {activeIndex === index && (
-              <div className="px-6 pb-6 text-gray-400 leading-8">
-                {faq.answer}
-              </div>
-            )}
-          </div>
+            <AnimatePresence initial={false}>
+              {activeIndex === index && (
+                <motion.div
+                  initial={{
+                    height: 0,
+                    opacity: 0,
+                  }}
+                  animate={{
+                    height: "auto",
+                    opacity: 1,
+                  }}
+                  exit={{
+                    height: 0,
+                    opacity: 0,
+                  }}
+                  transition={{
+                    duration: 0.35,
+                    ease: "easeInOut",
+                  }}
+                  className="overflow-hidden"
+                >
+                  <div className="px-6 pb-6 text-gray-400 leading-8">
+                    {faq.answer}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
     </section>
   );
 };
